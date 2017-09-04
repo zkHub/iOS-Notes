@@ -1,6 +1,4 @@
 # UIKit基础控件
--
---
 
 [toc]
 
@@ -24,24 +22,24 @@ layoutSubviews方便数据计算，drawRect方便视图重绘。两个方法都�
 **layoutSubviews在以下情况下会被调用：**
 
 > 1. addSubview会触发layoutSubviews。所以不要在这个方法中addSubview
-2. 设置view的Frame会触发layoutSubviews，当然前提是frame的值设置前后发生了变化。
-3. 滚动一个UIScrollView会触发layoutSubviews。
-4. 旋转Screen会触发父UIView上的layoutSubviews事件。
-5. 改变一个UIView大小的时候也会触发父UIView上的layoutSubviews事件。
-6. 直接调用setLayoutSubviews。
+> 2. 设置view的Frame会触发layoutSubviews，当然前提是frame的值设置前后发生了变化。
+> 3. 滚动一个UIScrollView会触发layoutSubviews。
+> 4. 旋转Screen会触发父UIView上的layoutSubviews事件。
+> 5. 改变一个UIView大小的时候也会触发父UIView上的layoutSubviews事件。
+> 6. 直接调用setLayoutSubviews。
 
 **drawRect在以下情况下会被调用：**
 
 > 1. 如果在UIView初始化时没有设置rect大小，将直接导致drawRect不被自动调用。drawRect 掉用是在Controller->loadView, Controller->viewDidLoad 两方法之后掉用的.
-2. 该方法在调用sizeToFit后被调用，所以可以先调用sizeToFit计算出size。然后系统自动调用drawRect:方法。
-3. 通过设置contentMode属性值为UIViewContentModeRedraw。那么将在每次设置或更改frame的时候自动调用drawRect:。
-4. 直接调用setNeedsDisplay，或者setNeedsDisplayInRect:触发drawRect:，但是有个前提条件是rect不能为0。
-以上1,2推荐；而3,4不提倡
+> 2. 该方法在调用sizeToFit后被调用，所以可以先调用sizeToFit计算出size。然后系统自动调用drawRect:方法。
+> 3. 通过设置contentMode属性值为UIViewContentModeRedraw。那么将在每次设置或更改frame的时候自动调用drawRect:。
+> 4. 直接调用setNeedsDisplay，或者setNeedsDisplayInRect:触发drawRect:，但是有个前提条件是rect不能为0。
+> 以上1,2推荐；而3,4不提倡
 
 **drawRect方法使用注意点：**
 > 1.  若使用UIView绘图，只能在drawRect：方法中获取相应的contextRef并绘图。如果在其他方法中获取将获取到一个invalidate 的ref并且不能用于画图。drawRect：方法不能手动显示调用，必须通过调用setNeedsDisplay 或 者 setNeedsDisplayInRect，让系统自动调该方法。
-2. 若使用calayer绘图，只能在drawInContext: 中（类似于drawRect）绘制，或者在delegate中的相应方法绘制。同样也是调用setNeedDisplay等间接调用以上方法
-3. 若要实时画图，不能使用gestureRecognizer，只能使用touchbegan等方法来调用setNeedsDisplay实时刷新屏幕
+> 2. 若使用calayer绘图，只能在drawInContext: 中（类似于drawRect）绘制，或者在delegate中的相应方法绘制。同样也是调用setNeedDisplay等间接调用以上方法
+> 3. 若要实时画图，不能使用gestureRecognizer，只能使用touchbegan等方法来调用setNeedsDisplay实时刷新屏幕
 
 
 ## UIButton
@@ -78,7 +76,9 @@ imageView在(y+h)<button.h时y值增长(a/2)  之后y+a，h-a直到h=0，y=butto
 ### 5. button的状态
 
 normal		普通状态
+
 highlight	按下时高亮状态
+
 **selected	选中状态 与高亮状态冲突**（需要设置selected，否则只有上面的两种状态）
    
 **取消button高亮状态**
@@ -288,11 +288,12 @@ extern long double ceill(long double);
     
     @end
 
-**tabbar跳转的时候使用hiden隐藏有的时候会导致webview计算其frame**
+**tabbar跳转的时候使用hiden隐藏有的时候会导致webview计算其frame**可能是在didappear的时候
+
 **下面这是啥我不知道先记录一下，有可能是我瞎说的，因为忘了这个bug了**
 
-    UITabBarItem *ffdxItem = [[UITabBarItem alloc]initWithTitle:@"付费短信" image:[[UIImage imageNamed:@"btn-fufeiduanxin"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] selectedImage:[[UIImage imageNamed:@"btn-fufeiduanxin--select"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];//系统Tabbar可能自动渲染图片导致非原图
-
+    //系统Tabbar可能自动渲染图片导致非原图
+    UITabBarItem *ffdxItem = [[UITabBarItem alloc]initWithTitle:@"付费短信" image:[[UIImage imageNamed:@"btn-fufeiduanxin"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] selectedImage:[[UIImage imageNamed:@"btn-fufeiduanxin--select"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
 
 ### 5. UINavigationController
 
