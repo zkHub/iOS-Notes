@@ -181,7 +181,7 @@ iOS的原点位置是左上角开始，而MacOS中是左下角开始。
 
 #### CAShapeLayer
 
-配合UIBezierPath实现复杂的遮罩、动画
+配合UIBezierPath实现复杂的遮罩、动画，下面是一个动画的实现：
 
     CAShapeLayer *shapeLayer = [CAShapeLayer layer];
     shapeLayer.frame = _demoView.bounds;
