@@ -19,7 +19,7 @@ viewWithTag函数会递归的匹配subviews。
 
 ### layoutSubviews & drawRect
 
-**layoutSubviews方便数据计算，drawRect方便视图重绘。两个方法都是异步执行**
+layoutSubviews方便数据计算，drawRect方便视图重绘。两个方法都是异步执行
 
 **layoutSubviews在以下情况下会被调用：**
 
