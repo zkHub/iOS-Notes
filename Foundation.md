@@ -2,6 +2,8 @@
 
 [toc]
 
+---
+
 ## NSString
 
 ### 初始化
@@ -44,6 +46,7 @@
 #### path操作
 
 `stringByAppendingPathComponent` 是添加/号，使之变成一个完整的路径   a/b
+
 `stringByAppendingPathExtension` 是加后缀的意思  a.b
 
 #### NSString -> unichar
@@ -91,7 +94,8 @@ iOS9之后废弃
 
 #### 基本使用
 
-一般使用其subClass `NSMutableAttributedString` 配合`Attributes`键值到达富文本实现
+一般使用其subClass `NSMutableAttributedString` 配合`Attributes`键值达到富文本实现
+
 `Attributes` 中 `NSParagraphStyleAttributeName` 为段落属性
 
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:self.row.intentString];

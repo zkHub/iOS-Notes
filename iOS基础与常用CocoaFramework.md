@@ -73,8 +73,8 @@ ceil(4.35) 返回的是double
 ceilf(4.35) 返回的是float类型5.0000000，做一个强制类型转换就得到5了。
 
 > extern float ceilf(float);
-extern double ceil(double);
-extern long double ceill(long double);
+> extern double ceil(double);
+> extern long double ceill(long double);
 
 
 
@@ -181,8 +181,27 @@ iOS的原点位置是左上角开始，而MacOS中是左下角开始。
 
 #### CAShapeLayer
 
-动画
+配合UIBezierPath实现复杂的遮罩、动画
 
+    CAShapeLayer *shapeLayer = [CAShapeLayer layer];
+    shapeLayer.frame = _demoView.bounds;
+
+    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:_demoView.bounds];
+
+    shapeLayer.path = path.CGPath;
+    shapeLayer.fillColor = [UIColor clearColor].CGColor;
+    shapeLayer.lineWidth = 2.0f;
+    shapeLayer.strokeColor = [UIColor redColor].CGColor;
+    [_demoView.layer addSublayer:shapeLayer];
+
+    CABasicAnimation *pathAnima = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+    pathAnima.duration = 3.0f;
+    pathAnima.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    pathAnima.fromValue = [NSNumber numberWithFloat:0.0f];
+    pathAnima.toValue = [NSNumber numberWithFloat:1.0f];
+    pathAnima.fillMode = kCAFillModeForwards;
+    pathAnima.removedOnCompletion = NO;
+    [shapeLayer addAnimation:pathAnima forKey:@"strokeEndAnimation"];
 
 
 ## TouchID Authenticate
