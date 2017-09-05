@@ -355,3 +355,7 @@ set完之后会异步持续执行数据同步，一般设置完就调用 `[defau
 
 
 
+### NSUUID
+
+    [[NSUUID UUID] UUIDString]
+
