@@ -41,6 +41,14 @@ layoutSubviews方便数据计算，drawRect方便视图重绘。两个方法都�
 > 2. 若使用calayer绘图，只能在drawInContext: 中（类似于drawRect）绘制，或者在delegate中的相应方法绘制。同样也是调用setNeedDisplay等间接调用以上方法
 > 3. 若要实时画图，不能使用gestureRecognizer，只能使用touchbegan等方法来调用setNeedsDisplay实时刷新屏幕
 
+### layer
+
+通过layer设置边框，圆角
+
+        [_btnOperation.layer setBorderColor:[UtilityHelper colorWithHexString:@"#8D9496"].CGColor];
+        [_btnOperation.layer setBorderWidth:1];
+        [_btnOperation.layer setCornerRadius:4];
+
 
 ## UIButton
 
@@ -52,7 +60,14 @@ UIEdgeInsetsMake(top+a, 0, 0, 0)
 若a为负数则两者y值减（-a/2） 否则titleLable的宽高不变 y值增长(a/2)
 imageView在(y+h)<button.h时y值增长(a/2)  之后y+a，h-a直到h=0，y=button.h y不变h+a
 
-### 2. 代码执行点击UIbutton事件
+
+上面的方法太繁琐，可以直接通过两个方法去设置
+
+    - (CGRect)titleRectForContentRect:(CGRect)contentRect;
+    - (CGRect)imageRectForContentRect:(CGRect)contentRect;
+
+
+### 2. 代码执行点击UIButton事件
 
     [button sendActionsForControlEvents:UIControlEventTouchUpInside];
     
@@ -130,6 +145,29 @@ extern long double ceill(long double);
 
 
 ## UIImage
+
+
+### 设置圆角（CG、bezier）
+
+    CGRect rect = (CGRect){0.f,0.f,self.size};
+    
+    // void UIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale);
+    //size——同UIGraphicsBeginImageContext,参数size为新创建的位图上下文的大小
+    //    opaque—透明开关，如果图形完全不用透明，设置为YES以优化位图的存储。
+    //    scale—–缩放因子
+    UIGraphicsBeginImageContextWithOptions(self.size, NO, [UIScreen mainScreen].scale);
+    
+    //根据矩形画带圆角的曲线
+    CGContextAddPath(UIGraphicsGetCurrentContext(), [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:radius].CGPath);
+    
+    [self drawInRect:rect];
+    
+    //图片缩放，是非线程安全的
+    UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
+    
+    //关闭上下文
+    UIGraphicsEndImageContext();
+
 
 ### 保存image到相册
 
@@ -626,6 +664,11 @@ iOS7之前是这样的（虽然不会用到了，但是这个idea很好）
         return YES;
     }
 
+### 触发手势依赖
+
+UIGestureRecognizer 有个方法叫做requireGestureRecognizerToFail，他可以指定某一个 recognizer，即便自己已经滿足條件了，也不會立刻触发，会等到该指定的 recognizer 确定失败之后才触发
+// 关键在这一行，如果双击确定偵測失败才會触发单击
+[singleRecognizer requireGestureRecognizerToFail:doubleRecognizer];
 
 
 ## UIResponder
@@ -663,16 +706,36 @@ iOS7之前是这样的（虽然不会用到了，但是这个idea很好）
 ## <a name="KVC_change_property">KVC实现修改控件属性</a>
 ## <a name="KVC_change_property"></a>KVC实现修改控件属性
 ```
+**很可惜目前发现部分属性iOS8还没添加--iOS9之后才添加**
 
+    UIAlertAction   titleTextColor
+    UITextView      _placeholderLabel
 
+1. key的值必须正确，如果拼写错误，会出现异常
+2. 当key的值是没有定义的，valueForUndefinedKey:这个方法会被调用，如果你自己写了这个方法，key的值出错就会调用到这里来
+3. 因为类key反复嵌套，所以有个keyPath的概念，keyPath就是用.号来把一个一个key链接起来，这样就可以根据这个路径访问下去
+4. NSArray／NSSet等都支持KVC
 
 ### 1. searchBar
     //获取searchBar里面的TextField
     UITextField*searchField = [_searchBar valueForKey:@"_searchField"];
     //更改searchBar 中PlaceHolder 字体颜色
     [searchField setValue:[UIColor blackColor] forKeyPath:@"_placeholderLabel.textColor"];
+    [searchField setValue:[UIFont boldSystemFontOfSize:16] forKeyPath:@"_placeholderLabel.font"];
     //更改searchBar输入文字颜色
     searchField.textColor= [UIColor blackColor];
+
+    //UISearchController和UISearchBar的Cancle按钮改title问题，简单粗暴
+    - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
+    {
+        searchController.searchBar.showsCancelButton = YES;
+        UIButton *canceLBtn = [searchController.searchBar valueForKey:@"cancelButton"];
+        [canceLBtn setTitle:@"取消" forState:UIControlStateNormal];
+        [canceLBtn setTitleColor:[UIColor colorWithRed:14.0/255.0 green:180.0/255.0 blue:0.0/255.0 alpha:1.00] forState:UIControlStateNormal];
+        searchBar.showsCancelButton = YES;
+        return YES;
+    }
+
 
 ### 2. UIAlertController
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"标题" message:@"内容" preferredStyle:UIAlertControllerStyleAlert];
