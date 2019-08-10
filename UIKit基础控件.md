@@ -231,7 +231,7 @@ extern long double ceill(long double);
 
 在某些控件包含textField私有属性时可以使用`[passwordField setValue:[UIColor whiteColor] forKeyPath:@"_placeholderLabel.textColor"];`设置textFiled的相关属性，是利用runtime获取到，并通过KVC来修改控件的属性见[KVC实现修改控件属性](#KVC_change_property)
 
-### 2. 限制textFiled输入的字符数
+### 2. 限制textView输入的字符数
 
     //text限制输入字符数
     #pragma UITextViewDelegate
@@ -255,7 +255,30 @@ extern long double ceill(long double);
         }
     }
 
+### 监听TextField输入
 
+#### 直接添加监听方法
+
+    -(void)addTargetMethod{
+        [self.textField1 addTarget:self action:@selector(textField1TextChange:) forControlEvents:UIControlEventEditingChanged];
+    }
+    -(void)textField1TextChange:(UITextField *)textField{
+        NSLog(@"textField1 - 输入框内容改变,当前内容为: %@",textField.text);
+    }
+
+
+#### NSNotificationCenter 添加监听方法
+
+    -(void)addNSNotificationCenter{
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textField2TextChange:) name:UITextFieldTextDidChangeNotification object:self.textField2];
+    }
+    -(void)textField2TextChange:(NSNotification *)noti{
+        UITextField *currentTextField = (UITextField *)noti.object;
+        NSLog(@"textField2 - 输入框内容改变,当前内容为: %@",currentTextField.text);
+    }
+    -(void)dealloc{
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+    }
 
 
 ## UISearchBar

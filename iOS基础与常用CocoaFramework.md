@@ -134,7 +134,7 @@ roundView.layer.anchorPoint = CGPointMake(0.5, 0.5);
 roundView.layer.position = CGPointMake(75, 75);
 iOS的原点位置是左上角开始，而MacOS中是左下角开始。
 
-画图(导致过崩溃，具体原因忘了。。。)
+画图(导致过崩溃，代理的僵尸对象？)
 
     CALayer *layer = [[CALayer alloc]init];
     layer.frame = _headerView.bounds;
